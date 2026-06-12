@@ -1096,26 +1096,20 @@ document.getElementById('main-form').addEventListener('submit', async (e) => {
     return;
   }
 
-  document.getElementById('loading').classList.add('show');
-  try {
-    // suffix 제거 후 저장
-    const cleanAnswers = {};
-    Object.entries(answers).forEach(([k, v]) => {
-      cleanAnswers[k] = typeof v === 'string' ? v.replace(/__[A-Z]$/, '').replace(/__[A-Z]\//g, '/') : v;
-    });
-    const payload = { studentId, name, birth, ...cleanAnswers, submittedAt: new Date().toISOString() };
-    await fetch(SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    showDone();
-  } catch (err) {
-    alert('제출 중 오류가 발생했습니다. 다시 시도해 주세요.');
-  } finally {
-    document.getElementById('loading').classList.remove('show');
-  }
+  // suffix 제거 후 저장
+  const cleanAnswers = {};
+  Object.entries(answers).forEach(([k, v]) => {
+    cleanAnswers[k] = typeof v === 'string' ? v.replace(/__[A-Z]$/, '').replace(/__[A-Z]\//g, '/') : v;
+  });
+  const payload = { studentId, name, birth, ...cleanAnswers, submittedAt: new Date().toISOString() };
+  // 완료 화면 즉시 표시 후 백그라운드로 시트 전송
+  showDone();
+  fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).catch(() => {});
 });
 
 function showDone() {
