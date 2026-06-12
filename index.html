@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강남대성기숙 의대관 수업 신청</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans KR', -apple-system, sans-serif;
+    background: #f0f0f0;
+    color: #202124;
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+  }
+
+  .top-bar {
+    background: #6750a4;
+    height: 10px;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 0;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    padding: 24px;
+    margin-bottom: 12px;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .card.header-card {
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding-top: 28px;
+  }
+
+  .card:not(.header-card) {
+    border-radius: 8px;
+  }
+
+  .form-title {
+    font-size: 26px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    color: #202124;
+  }
+
+  .form-desc {
+    font-size: 13px;
+    color: #444;
+    line-height: 1.7;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 16px;
+  }
+
+  .form-desc p { margin-bottom: 6px; }
+  .form-desc strong { color: #c0392b; }
+
+  /* 자습 카운터 배너 */
+  .jaseup-banner {
+    max-width: 680px;
+    margin: 0 auto 12px;
+    background: #f3f0ff;
+    border: 1px solid #c8b8ff;
+    border-radius: 8px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 12px;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(103,80,164,0.12);
+  }
+
+  .jaseup-banner .label {
+    font-size: 14px;
+    color: #4a3b8c;
+    font-weight: 500;
+  }
+
+  .jaseup-count {
+    font-size: 22px;
+    font-weight: 700;
+    color: #6750a4;
+    min-width: 80px;
+    text-align: right;
+  }
+
+  .jaseup-count.at-limit { color: #c0392b; }
+
+  .jaseup-bar {
+    height: 4px;
+    background: #e0d8f7;
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .jaseup-bar-fill {
+    height: 100%;
+    background: #6750a4;
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+
+  .jaseup-bar-fill.at-limit { background: #c0392b; }
+
+  /* 문항 */
+  .question-label {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .question-label .required {
+    color: #c0392b;
+    margin-left: 2px;
+  }
+
+  .options-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .option-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+
+  .option-item:hover { background: #f8f5ff; }
+
+  .option-item input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    accent-color: #6750a4;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .option-item.jaseup-option input[type="radio"] {
+    accent-color: #888;
+  }
+
+  .option-item label {
+    font-size: 14px;
+    cursor: pointer;
+    flex: 1;
+    color: #333;
+  }
+
+  .option-item.jaseup-option label {
+    color: #666;
+    font-style: italic;
+  }
+
+  .option-item.jaseup-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .option-item.tangg-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+    text-decoration: line-through;
+  }
+
+  /* 기본 정보 입력 */
+  .input-group {
+    margin-bottom: 20px;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .input-group label .required { color: #c0392b; margin-left: 2px; }
+
+  .input-group input[type="text"],
+  .input-group input[type="date"] {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    padding: 8px 2px;
+    font-size: 15px;
+    outline: none;
+    background: transparent;
+    color: #202124;
+    transition: border-color 0.2s;
+  }
+
+  .input-group input:focus { border-bottom-color: #6750a4; }
+
+  /* 제출 버튼 */
+  .submit-wrap {
+    max-width: 680px;
+    margin: 20px auto 0;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .btn-submit {
+    background: #6750a4;
+    color: #fff;
+    border: none;
+    padding: 12px 32px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-submit:hover { background: #5a4496; }
+  .btn-submit:disabled { background: #bbb; cursor: not-allowed; }
+
+  /* 오류 메시지 */
+  .error-msg {
+    font-size: 12px;
+    color: #c0392b;
+    margin-top: 8px;
+    display: none;
+  }
+
+  /* 완료 화면 */
+  #done-screen {
+    display: none;
+    max-width: 680px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 8px;
+    padding: 40px 24px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  }
+
+  #done-screen h2 { font-size: 22px; color: #6750a4; margin-bottom: 12px; }
+  #done-screen p { color: #555; font-size: 14px; line-height: 1.7; }
+
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.8);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .loading-overlay.show { display: flex; }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid #e0e0e0;
+    border-top-color: #6750a4;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-overlay p { font-size: 14px; color: #666; }
+
+  /* 섹션 */
+  .section-wrap { display: none; }
+  .section-wrap.active { display: block; }
+
+  .section-header {
+    max-width: 680px;
+    margin: 0 auto 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title-bar {
+    background: #6750a4;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    max-width: 680px;
+    margin: 0 auto 8px;
+    letter-spacing: 0.3px;
+  }
+
+  .section-nav {
+    max-width: 680px;
+    margin: 16px auto 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .btn-prev {
+    background: #fff;
+    color: #6750a4;
+    border: 1px solid #6750a4;
+    padding: 11px 28px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .btn-next {
+    background: #6750a4;
+    color: #fff;
+    border: none;
+    padding: 11px 28px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .btn-next:hover { background: #5a4496; }
+  .btn-prev:hover { background: #f3f0ff; }
+
+  /* 진행 표시 */
+  .progress-bar-wrap {
+    max-width: 680px;
+    margin: 0 auto 16px;
+    background: #e0d8f7;
+    border-radius: 4px;
+    height: 5px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: #6750a4;
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+  .progress-label {
+    max-width: 680px;
+    margin: 0 auto 6px;
+    font-size: 12px;
+    color: #888;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<!-- 로딩 -->
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <p>제출 중입니다…</p>
+</div>
+
+<!-- 헤더 카드 -->
+<div style="max-width:680px;margin:0 auto;">
+  <div class="top-bar"></div>
+</div>
+<div class="card header-card">
+  <h1 class="form-title">강남대성기숙 의대관<br>수업 신청</h1>
+  <div class="form-desc">
+    <p>아래 설명을 확인하신 후, 수강을 희망하는 수업의 선생님을 선택해 주세요.</p>
+    <p>※ 수업은 최소 3개 이상 선택해 주시고, 수강하지 않을 과목은 <strong>'자습'</strong>을 선택해 주세요.<br>
+    (자습 선택은 수업 수에 포함되지 않습니다.)</p>
+    <p>※ 국/수/영 수업은 입소 이후 2주 단위로 변경 신청을 받으며, 탐구 수업은 상시 변경 가능합니다. (행정실 문의)</p>
+    <p>※ 기본적으로 현장강의로 배정되나, 수강 인원에 따라 일부 수업의 경우 라이브(Live) 수업으로 배정될 수 있습니다.</p>
+  </div>
+</div>
+
+<!-- 진행 표시 -->
+<div class="progress-label" id="progress-label">1 / 5 — 인적사항</div>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:20%"></div></div>
+
+<!-- 자습 카운터 배너 -->
+<div class="jaseup-banner" id="jaseup-banner" style="display:none">
+  <div>
+    <div class="label">🛑 자습 선택 횟수 (최대 6개)</div>
+    <div class="jaseup-bar"><div class="jaseup-bar-fill" id="jaseup-bar-fill" style="width:0%"></div></div>
+  </div>
+  <div class="jaseup-count" id="jaseup-count">0 / 6</div>
+</div>
+
+<!-- 폼 -->
+<form id="main-form">
+
+  <!-- 섹션 0: 인적사항 -->
+  <div class="section-wrap active" id="section-0">
+    <div class="section-title-bar">👤 인적사항</div>
+    <div class="card">
+      <div class="input-group">
+        <label>수험번호를 입력해주세요 <span class="required">*</span></label>
+        <input type="text" id="student-id" placeholder="수험번호 입력">
+      </div>
+      <div class="input-group">
+        <label>학생의 이름을 입력해주세요 <span class="required">*</span></label>
+        <input type="text" id="student-name" placeholder="이름 입력">
+      </div>
+      <div class="input-group" style="margin-bottom:0">
+        <label>학생의 생년월일을 입력해주세요 <span class="required">*</span></label>
+        <input type="date" id="student-birth">
+      </div>
+    </div>
+    <div class="section-nav">
+      <div></div>
+      <button type="button" id="btn-next-info" class="btn-next">다음 → 국어</button>
+    </div>
+  </div>
+
+  <!-- 섹션 1: 국어 -->
+  <div class="section-wrap" id="section-1">
+    <div class="section-title-bar">📘 국어</div>
+    <div id="wrap-1"></div>
+    <div class="section-nav">
+      <div></div>
+      <button type="button" class="btn-next" id="btn-next-1">다음 → 수학</button>
+    </div>
+  </div>
+
+  <!-- 섹션 2: 수학 -->
+  <div class="section-wrap" id="section-2">
+    <div class="section-title-bar">📗 수학</div>
+    <div id="wrap-2"></div>
+    <div class="section-nav">
+      <button type="button" class="btn-prev" id="btn-prev-2">← 국어</button>
+      <button type="button" class="btn-next" id="btn-next-2">다음 → 영어</button>
+    </div>
+  </div>
+
+  <!-- 섹션 3: 영어 -->
+  <div class="section-wrap" id="section-3">
+    <div class="section-title-bar">📙 영어</div>
+    <div id="wrap-3"></div>
+    <div class="section-nav">
+      <button type="button" class="btn-prev" id="btn-prev-3">← 수학</button>
+      <button type="button" class="btn-next" id="btn-next-3">다음 → 탐구</button>
+    </div>
+  </div>
+
+  <!-- 섹션 4: 탐구 -->
+  <div class="section-wrap" id="section-4">
+    <div class="section-title-bar">📕 탐구</div>
+    <div id="wrap-4"></div>
+    <div class="section-nav">
+      <button type="button" class="btn-prev" id="btn-prev-4">← 영어</button>
+      <button type="submit" class="btn-next btn-submit" id="btn-submit">제출하기</button>
+    </div>
+  </div>
+</form>
+
+<!-- 완료 화면 -->
+<div id="done-screen">
+  <h2>✅ 신청이 완료되었습니다</h2>
+  <p>수업 신청이 정상적으로 접수되었습니다.<br>변경이 필요한 경우 행정실에 문의해 주세요.</p>
+</div>
+
+<script>
+// ====== 설정 ======
+const SHEET_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL';
+const JASEUP_MAX = 6;
+
+// ====== 수학 충돌 그룹 ======
+// 같은 그룹끼리 동시 선택 불가
+const MATH_CONFLICT_PAIRS = [
+  ['강호길 선생님(미적분)', '신현식 선생님'],
+  ['김도혁 선생님(미적분)', '김치헌 선생님'],
+];
+
+function isMathConflict(q4val, q6val) {
+  if (!q4val || !q6val || q4val === '자습' || q6val === '자습') return false;
+  return MATH_CONFLICT_PAIRS.some(([m6, m4]) => q6val === m6 && q4val === m4);
+}
+
+function updateMathConflict() {
+  const q4val = document.querySelector('input[name="q4"]:checked')?.value;
+  const q6val = document.querySelector('input[name="q6"]:checked')?.value;
+
+  // q6 선택지 비활성화
+  document.querySelectorAll('input[name="q6"]').forEach(radio => {
+    if (radio.value === '자습') return;
+    const li = radio.closest('li');
+    const blocked = q4val && MATH_CONFLICT_PAIRS.some(([m6, m4]) => radio.value === m6 && q4val === m4);
+    if (blocked && !radio.checked) {
+      li.classList.add('tangg-disabled'); radio.disabled = true;
+    } else if (li.classList.contains('tangg-disabled')) {
+      li.classList.remove('tangg-disabled'); radio.disabled = false;
+    }
+  });
+
+  // q4 선택지 비활성화
+  document.querySelectorAll('input[name="q4"]').forEach(radio => {
+    if (radio.value === '자습') return;
+    const li = radio.closest('li');
+    const blocked = q6val && MATH_CONFLICT_PAIRS.some(([m6, m4]) => q6val === m6 && radio.value === m4);
+    if (blocked && !radio.checked) {
+      li.classList.add('tangg-disabled'); radio.disabled = true;
+    } else if (li.classList.contains('tangg-disabled')) {
+      li.classList.remove('tangg-disabled'); radio.disabled = false;
+    }
+  });
+}
+
+// ====== 탐구 그룹 ======
+// 동일 선생님이 복수 그룹에 있는 경우 __C / __D suffix로 내부 구분
+// 표시할 때는 displayLabel() 함수로 suffix 제거
+const TANGG_GROUPS = {
+  '물리학Ⅰ / 방인혁 선생님':            'C',
+
+  '생명과학Ⅰ / 손윤희 선생님':          'C',
+  '지구과학Ⅰ / 김진영 선생님(LIVE 수업)':    'C',
+  '지구과학Ⅰ / 이정준 선생님':          'C',
+  '사회문화 / 홍재영 선생님':            'C',
+  '한국지리 / 전성오 선생님':            'C',
+  '경제 / 이예섭':                       'C',
+  '물리학Ⅰ / 김훈 선생님':              'D',
+
+  '생명과학Ⅰ / 정석준 선생님(LIVE 수업)':    'D',
+  '지구과학Ⅰ / 양길봉 선생님':          'D',
+  '지구과학Ⅰ / 이훈식 선생님':          'D',
+
+  '동아시아사 / 고진범 선생님':          'D',
+  '세계사 / 전병훈 선생님':              'E',
+  '물리학Ⅱ / 고재근 선생님':            'E',
+  '생명과학Ⅱ / 최한근 선생님':          'F',
+  '사회문화 / 이형수 선생님__G':         'G',
+  '정치와 법 / 최여름 선생님':           'G',
+  '윤리와사상 / 임현철 선생님':          'G',
+  '생활과 윤리 / 정수환 선생님__G':      'G',
+  '화학Ⅱ / 최홍석 선생님':              'G',
+  '세계지리 / 박동수 선생님':            'H',
+  '지구과학Ⅱ / 이남철 선생님':          'H',
+  // MULTI: 복수 그룹 소속 (배열로 저장)
+  '화학Ⅰ / 우승석 선생님__MULTI':        ['C','D'],
+  '생명과학Ⅰ / 정윤제 선생님__MULTI':    ['C','D'],
+  '사회문화 / 이형수 선생님__MULTI':      ['D','G'],
+  '생활과 윤리 / 정수환 선생님__MULTI':   ['D','G'],
+};
+
+// suffix 제거해서 화면에 표시할 레이블 반환
+function displayLabel(val) {
+  return val.replace(/__[A-Za-z]+$/, '');
+}
+
+// ====== 문항 정의 ======
+const questions = [
+  {
+    id: 'q1',
+    label: '1. 수강 희망하는 국어(독서) 선생님을 선택해주세요.',
+    options: ['이정수 선생님','류재민 선생님(LIVE 수업 배정될 수 있음)','박금병 선생님','이창훈 선생님','홍지운 선생님','자습']
+  },
+  {
+    id: 'q2',
+    label: '2. 수강 희망하는 국어(문학) 선생님을 선택해 주세요.',
+    options: ['고광수 선생님','이승모 선생님(LIVE 수업 배정될 수 있음)','신동민 선생님','김한솔 선생님','한승 선생님','자습']
+  },
+  {
+    id: 'q3',
+    label: '3. 수강 희망하는 국어 선택(언어와매체/화법과 작문) 선생님을 선택해 주세요.',
+    options: ['백환 선생님(언어와매체)','윤권철 선생님(언어와매체)','이정일 선생님(언어와매체)','윤민 선생님(언어와매체)','김성준 선생님(화법과작문)','자습']
+  },
+  {
+    id: 'q4',
+    label: '4. 수강 희망하는 수학(수학Ⅰ) 선생님을 선택해 주세요.',
+    options: ['송준석 선생님','황지현 선생님','권현석 선생님(LIVE 수업 배정될 수 있음)','김치헌 선생님','신현식 선생님','자습']
+  },
+  {
+    id: 'q5',
+    label: '5. 수강 희망하는 수학(수학Ⅱ) 선생님을 선택해 주세요.',
+    options: ['손승연 선생님(LIVE 수업 배정될 수 있음)','신민우 선생님','백종석 선생님','이상훈 선생님','자습']
+  },
+  {
+    id: 'q6',
+    label: '6. 수강 희망하는 수학(미적분/확률과통계) 선생님을 선택해 주세요.',
+    options: ['김범준 선생님(미적분/LIVE 수업 배정될 수 있음)','강호길 선생님(미적분)','이정환 선생님(미적분)','이종완 선생님(미적분)','김도혁 선생님(미적분)','은종찬 선생님(확률과 통계)','자습']
+  },
+  {
+    id: 'q7',
+    label: '7. 수강 희망하는 영어 선생님을 선택해 주세요.',
+    options: ['김대순 선생님','지윤경 선생님','류지수 선생님','최은정 선생님','고연승 선생(LIVE 수업 배정될 수 있음)','오태수 선생님','자습']
+  },
+  {
+    id: 'q8',
+    label: '8. 수강 희망하는 탐구 선생님을 선택해 주세요.',
+    isTangg: true,
+    options: [
+      // 물리학Ⅰ
+      '물리학Ⅰ / 방인혁 선생님',
+      '물리학Ⅰ / 김훈 선생님',
+      // 화학Ⅰ
+      '화학Ⅰ / 우승석 선생님__MULTI',
+      // 생명과학Ⅰ
+      '생명과학Ⅰ / 정윤제 선생님__MULTI',
+      '생명과학Ⅰ / 손윤희 선생님',
+      '생명과학Ⅰ / 정석준 선생님(LIVE 수업)',
+      // 지구과학Ⅰ
+      '지구과학Ⅰ / 김진영 선생님(LIVE 수업)',
+      '지구과학Ⅰ / 이정준 선생님',
+      '지구과학Ⅰ / 양길봉 선생님',
+      '지구과학Ⅰ / 이훈식 선생님',
+      // 물리학Ⅱ
+      '물리학Ⅱ / 고재근 선생님',
+      // 화학Ⅱ
+      '화학Ⅱ / 최홍석 선생님',
+      // 생명과학Ⅱ
+      '생명과학Ⅱ / 최한근 선생님',
+      // 지구과학Ⅱ
+      '지구과학Ⅱ / 이남철 선생님',
+      // 나머지 가나다순
+      '경제 / 이예섭',
+      '동아시아사 / 고진범 선생님',
+      '사회문화 / 홍재영 선생님',
+      '사회문화 / 이형수 선생님__MULTI',
+      '생활과 윤리 / 정수환 선생님__MULTI',
+      '세계사 / 전병훈 선생님',
+      '세계지리 / 박동수 선생님',
+      '윤리와사상 / 임현철 선생님',
+      '정치와 법 / 최여름 선생님',
+      '한국지리 / 전성오 선생님',
+    ]
+  }
+];
+
+// ====== 탐구 충돌 로직 ======
+function parseOption(val) {
+  if (!val || val.startsWith('자습')) return { subject: null, teacher: null };
+  const clean = val.replace(/__[A-Za-z]+$/, '');
+  const parts = clean.split(' / ');
+  if (parts.length > 1) return { subject: parts[0].trim(), teacher: parts[1].trim() };
+  return { subject: null, teacher: parts[0].trim() };
+}
+
+function getGroups(val) {
+  const g = TANGG_GROUPS[val];
+  if (!g) return [];
+  return Array.isArray(g) ? g : [g];
+}
+
+// MULTI 선택지를 실제 충돌 없는 그룹으로 resolve
+function resolveMulti(val) {
+  if (!val.endsWith('__MULTI')) return val;
+  const groups = TANGG_GROUPS[val]; // ['C','D'] or ['D','G']
+  // 이미 선택된 항목들의 그룹
+  const usedGroups = tanggSelected
+    .filter(s => s && !s.startsWith('자습') && s !== val)
+    .flatMap(s => getGroups(s));
+  // 충돌 없는 첫 번째 그룹 선택
+  const available = groups.filter(g => !usedGroups.includes(g));
+  if (available.length === 0) return val; // 모두 충돌 (차단됨)
+  // val의 __MULTI를 __그룹 으로 교체
+  return val.replace('__MULTI', '__' + available[0]);
+}
+
+// 선택 목록 내 모든 MULTI 항목을 현재 상태 기준으로 resolve
+function resolveAllMulti() {
+  // MULTI가 아닌 항목들의 그룹을 먼저 파악
+  for (let i = 0; i < tanggSelected.length; i++) {
+    if (!tanggSelected[i] || !tanggSelected[i].endsWith('__MULTI')) continue;
+    const val = tanggSelected[i];
+    const groups = TANGG_GROUPS[val];
+    // 다른 항목(이미 resolved된)의 그룹
+    const otherGroups = tanggSelected
+      .filter((s, idx) => idx !== i && s && !s.startsWith('자습'))
+      .flatMap(s => getGroups(s));
+    const available = groups.filter(g => !otherGroups.includes(g));
+    if (available.length > 0) {
+      // resolve 가능 → 확정
+      tanggSelected[i] = val.replace('__MULTI', '__' + available[0]);
+    }
+    // available이 없으면 MULTI 유지 (차단 상태, 사실상 발생 안 함)
+  }
+}
+
+function isTanggConflict(a, b) {
+  if (!a || !b) return false;
+  if (a.startsWith('자습') || b.startsWith('자습')) return false;
+  const pa = parseOption(a);
+  const pb = parseOption(b);
+  // 같은 선생님 → 무조건 충돌
+  if (pa.teacher && pb.teacher && pa.teacher === pb.teacher) return true;
+  // 같은 과목 → 무조건 충돌
+  if (pa.subject && pb.subject && pa.subject === pb.subject) return true;
+  // 그룹 체크
+  const ga = getGroups(a);
+  const gb = getGroups(b);
+  if (ga.length === 0 || gb.length === 0) return false;
+  // ga, gb 중 충돌 안 되는 조합(g1 != g2)이 하나라도 있으면 → 허용
+  for (const g1 of ga) {
+    for (const g2 of gb) {
+      if (g1 !== g2) return false;
+    }
+  }
+  return true;
+}
+
+// ====== 탐구 선택 상태 ======
+// q8은 checkbox 2개 선택 방식
+// 선택값 저장
+let tanggSelected = []; // 과목 선택 (자습 제외)
+let tanggJaseupCount = -1; // -1: 미선택, 0/1/2: 자습 개수
+
+function getTanggAllowedCount() {
+  if (tanggJaseupCount === 2) return 0;
+  if (tanggJaseupCount === 1) return 1;
+  if (tanggJaseupCount === 0) return 2;
+  return -1; // 미선택
+}
+
+function updateTanggUI() {
+  const allowed = getTanggAllowedCount();
+  const courseCount = tanggSelected.length;
+
+  document.querySelectorAll('input[data-tangg="1"]').forEach(cb => {
+    const val = cb.value;
+    const li = cb.closest('li');
+    const isSelected = val.endsWith('__MULTI')
+      ? tanggSelected.some(v => v.startsWith(val.replace('__MULTI', '__')))
+      : tanggSelected.includes(val);
+    cb.checked = isSelected;
+
+    if (isSelected) {
+      li.classList.remove('tangg-disabled'); cb.disabled = false; return;
+    }
+    // 자습 개수 미선택 시 전부 비활성
+    if (allowed === -1) {
+      li.classList.add('tangg-disabled'); cb.disabled = true; return;
+    }
+    // 자습 2개: 과목 선택 불가
+    if (allowed === 0) {
+      li.classList.add('tangg-disabled'); cb.disabled = true; return;
+    }
+    // 이미 최대 선택
+    if (courseCount >= allowed) {
+      li.classList.add('tangg-disabled'); cb.disabled = true; return;
+    }
+    // 충돌
+    const conflictWith = tanggSelected.find(s => isTanggConflict(s, val));
+    if (conflictWith) {
+      li.classList.add('tangg-disabled'); cb.disabled = true; return;
+    }
+    li.classList.remove('tangg-disabled'); cb.disabled = false;
+  });
+
+  // 선택 현황
+  const statusEl = document.getElementById('tangg-status');
+  if (statusEl) {
+    let txt = '';
+    if (allowed === 0) {
+      txt = '탐구 자습 2개';
+    } else if (allowed === 1) {
+      txt = courseCount === 1 ? `${displayLabel(tanggSelected[0])} + 자습 1개 ✓` : '탐구 1과목을 선택해 주세요';
+    } else if (allowed === 2) {
+      if (courseCount === 0) txt = '탐구 2과목을 선택해 주세요';
+      else if (courseCount === 1) txt = `${displayLabel(tanggSelected[0])} 선택됨 → 1과목 더 선택`;
+      else txt = `${displayLabel(tanggSelected[0])} + ${displayLabel(tanggSelected[1])} ✓`;
+    }
+    statusEl.textContent = txt;
+    statusEl.style.color = isTanggComplete() ? '#2d7a2d' : '#6750a4';
+  }
+}
+
+function isTanggComplete() {
+  if (tanggJaseupCount === -1) return false;
+  if (tanggJaseupCount === 2) return true;
+  if (tanggJaseupCount === 1) return tanggSelected.length === 1;
+  if (tanggJaseupCount === 0) return tanggSelected.length === 2;
+  return false;
+}
+
+function onTanggClick(val) {
+  const existingIdx = tanggSelected.findIndex(v => {
+    if (v === val) return true;
+    if (val.endsWith('__MULTI')) {
+      const base = val.replace('__MULTI', '');
+      return v.startsWith(base + '__');
+    }
+    return false;
+  });
+  if (existingIdx !== -1) {
+    tanggSelected.splice(existingIdx, 1);
+    resolveAllMulti();
+  } else {
+    tanggSelected.push(val);
+    resolveAllMulti();
+  }
+  updateTanggUI();
+  // 자습 카운터 업데이트 (탐구 자습은 별도 카운트 안 함 — q1~q7만)
+  updateGlobalJaseupBanner();
+  clearError('q8');
+}
+
+// ====== 섹션 구조 ======
+// 섹션별 문항 매핑
+const sectionMap = {
+  1: ['q1','q2','q3'],       // 국어
+  2: ['q4','q5','q6'],       // 수학
+  3: ['q7'],                  // 영어
+  4: ['q8'],                  // 탐구
+};
+
+let currentSection = 0;
+const TOTAL_SECTIONS = 5;
+
+function goNext(sectionIdx) {
+  // 인적사항 섹션은 별도 검사
+  if (sectionIdx === 0) {
+    const sid = document.getElementById('student-id').value.trim();
+    const sname = document.getElementById('student-name').value.trim();
+    const sbirth = document.getElementById('student-birth').value;
+    if (!sid || !sname || !sbirth) {
+      alert('수험번호, 이름, 생년월일을 모두 입력해 주세요.');
+      return;
+    }
+    showSection(1);
+    return;
+  }
+  // 현재 섹션 유효성 검사
+  const qids = sectionMap[sectionIdx];
+  let valid = true;
+  for (const qid of qids) {
+    const q = questions.find(q => q.id === qid);
+    if (q.isTangg) {
+      if (tanggSelected.length < 2) {
+        document.getElementById('err-' + qid).style.display = 'block';
+        document.getElementById('list-' + qid).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        valid = false; break;
+      }
+    } else {
+      const checked = document.querySelector(`input[name="${qid}"]:checked`);
+      if (!checked) {
+        document.getElementById('err-' + qid).style.display = 'block';
+        if (valid) document.getElementById('list-' + qid).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        valid = false; break;
+      }
+    }
+  }
+  if (!valid) return;
+  showSection(sectionIdx + 1);
+}
+
+function goPrev(sectionIdx) {
+  showSection(sectionIdx - 1);
+}
+
+function showSection(idx) {
+  document.querySelectorAll('.section-wrap').forEach(el => el.classList.remove('active'));
+  document.getElementById('section-' + idx).classList.add('active');
+  currentSection = idx;
+  // 진행바
+  const pct = ((idx + 1) / TOTAL_SECTIONS) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  const labels = ['1 / 5 — 인적사항', '2 / 5 — 국어', '3 / 5 — 수학', '4 / 5 — 영어', '5 / 5 — 탐구'];
+  document.getElementById('progress-label').textContent = labels[idx];
+  // 인적사항 섹션에서는 자습 배너 숨김
+  document.getElementById('jaseup-banner').style.display = idx === 0 ? 'none' : 'flex';
+  // 자습 배너: 인적사항 섹션(0)에서는 숨김
+  document.getElementById('jaseup-banner').style.display = idx === 0 ? 'none' : '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ====== 문항 렌더링 ======
+Object.entries(sectionMap).forEach(([secIdx, qids]) => {
+  const wrap = document.getElementById('wrap-' + secIdx);
+  qids.forEach(qid => {
+    const q = questions.find(item => item.id === qid);
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    if (q.isTangg) {
+      card.innerHTML = `
+        <div class="question-label">${q.label} <span class="required">*</span></div>
+        <div style="margin-bottom:16px;">
+          <div style="font-size:13px;font-weight:500;color:#444;margin-bottom:10px;">탐구 자습 개수를 선택해 주세요 <span style="color:#c0392b">*</span></div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+              <input type="radio" name="tangg-jaseup" value="0" style="accent-color:#6750a4;width:16px;height:16px;"> 자습 0개 (탐구 2과목)
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+              <input type="radio" name="tangg-jaseup" value="1" style="accent-color:#6750a4;width:16px;height:16px;"> 자습 1개 (탐구 1과목)
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+              <input type="radio" name="tangg-jaseup" value="2" style="accent-color:#6750a4;width:16px;height:16px;"> 자습 2개 (탐구 0과목)
+            </label>
+          </div>
+        </div>
+        <div id="tangg-course-wrap" style="display:none;">
+          <div id="tangg-status" style="font-size:13px;margin-bottom:12px;color:#6750a4;min-height:18px;"></div>
+          <ul class="options-list" id="list-${q.id}"></ul>
+        </div>
+        <div class="error-msg" id="err-${q.id}">탐구 자습 개수 및 선생님을 선택해 주세요.</div>
+      `;
+      const ul = card.querySelector('#list-' + q.id);
+      q.options.forEach((opt, optIdx) => {
+        const isJaseupOpt = opt.startsWith('자습');
+        const li = document.createElement('li');
+        li.className = 'option-item' + (isJaseupOpt ? ' jaseup-option' : '');
+        li.innerHTML = `
+          <input type="checkbox" data-tangg="1" id="${q.id}_${optIdx}" value="${opt}">
+          <label for="${q.id}_${optIdx}">${displayLabel(opt)}</label>
+        `;
+        const cb = li.querySelector('input');
+        cb.style.cssText = 'accent-color:#6750a4;width:18px;height:18px;margin-right:12px;flex-shrink:0;cursor:pointer;';
+        li.addEventListener('click', () => {
+          if (cb.disabled) return;
+          onTanggClick(opt);
+        });
+        ul.appendChild(li);
+      });
+      // 자습 개수 라디오 이벤트
+      card.querySelectorAll('input[name="tangg-jaseup"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+          tanggJaseupCount = parseInt(radio.value);
+          tanggSelected = tanggSelected.filter(v => v && !v.startsWith('자습'));
+          // 자습 0개면 과목 wrap 표시, 2개면 숨김
+          const courseWrap = document.getElementById('tangg-course-wrap');
+          courseWrap.style.display = tanggJaseupCount === 2 ? 'none' : 'block';
+          updateTanggUI();
+          updateGlobalJaseupBanner();
+          clearError('q8');
+        });
+      });
+    } else {
+      card.innerHTML = `
+        <div class="question-label">${q.label} <span class="required">*</span></div>
+        <ul class="options-list" id="list-${q.id}"></ul>
+        <div class="error-msg" id="err-${q.id}">선생님을 선택해 주세요.</div>
+      `;
+      const ul = card.querySelector('#list-' + q.id);
+      q.options.forEach((opt, optIdx) => {
+        const isJaseup = opt === '자습';
+        const li = document.createElement('li');
+        li.className = 'option-item' + (isJaseup ? ' jaseup-option' : '');
+        li.dataset.qid = q.id;
+        li.dataset.jaseup = isJaseup ? '1' : '0';
+        li.innerHTML = `
+          <input type="radio" name="${q.id}" id="${q.id}_${optIdx}" value="${opt}" ${isJaseup ? 'data-jaseup="1"' : ''}>
+          <label for="${q.id}_${optIdx}">${opt}</label>
+        `;
+        li.addEventListener('click', () => {
+          const radio = li.querySelector('input[type="radio"]');
+          if (radio.disabled) return;
+          radio.checked = true;
+          onSelectionChange(q.id);
+        });
+        ul.appendChild(li);
+      });
+    }
+    wrap.appendChild(card);
+  });
+});
+
+// ====== 자습 카운터 (q1~q7) ======
+function getJaseupCount() {
+  return document.querySelectorAll('input[data-jaseup="1"]:checked').length;
+}
+
+function getTotalJaseupCount() {
+  // q1~q7 자습 + 탐구 자습 (미선택=-1이면 0으로)
+  const base = document.querySelectorAll('input[data-jaseup="1"]:checked').length;
+  const tangg = tanggJaseupCount >= 0 ? tanggJaseupCount : 0;
+  return base + tangg;
+}
+
+function updateGlobalJaseupBannerWithTangg() {
+  const count = getTotalJaseupCount();
+  const el = document.getElementById('jaseup-count');
+  const fill = document.getElementById('jaseup-bar-fill');
+  el.textContent = `${count} / ${JASEUP_MAX}`;
+  const pct = Math.min((count / JASEUP_MAX) * 100, 100);
+  fill.style.width = pct + '%';
+  if (count >= JASEUP_MAX) {
+    el.classList.add('at-limit');
+    fill.classList.add('at-limit');
+  } else {
+    el.classList.remove('at-limit');
+    fill.classList.remove('at-limit');
+  }
+}
+
+function updateGlobalJaseupBanner() {
+  const count = getTotalJaseupCount();
+  const el = document.getElementById('jaseup-count');
+  const fill = document.getElementById('jaseup-bar-fill');
+  el.textContent = `${count} / ${JASEUP_MAX}`;
+  const pct = Math.min((count / JASEUP_MAX) * 100, 100);
+  fill.style.width = pct + '%';
+  if (count >= JASEUP_MAX) {
+    el.classList.add('at-limit');
+    fill.classList.add('at-limit');
+  } else {
+    el.classList.remove('at-limit');
+    fill.classList.remove('at-limit');
+  }
+  // q1~q7 자습 비활성화
+  document.querySelectorAll('.jaseup-option').forEach(li => {
+    const radio = li.querySelector('input[type="radio"]');
+    if (!radio) return;
+    if (count >= JASEUP_MAX && !radio.checked) {
+      li.classList.add('jaseup-disabled'); radio.disabled = true;
+    } else {
+      li.classList.remove('jaseup-disabled'); radio.disabled = false;
+    }
+  });
+  // 탐구 자습 라디오 비활성화 (자습 1개, 2개)
+  const baseCount = getJaseupCount();
+  document.querySelectorAll('input[name="tangg-jaseup"]').forEach(radio => {
+    const val = parseInt(radio.value);
+    if (val === 0) { radio.disabled = false; radio.closest('label').style.opacity = '1'; return; }
+    if (baseCount + val > JASEUP_MAX) {
+      radio.disabled = true;
+      radio.closest('label').style.opacity = '0.4';
+    } else {
+      radio.disabled = false;
+      radio.closest('label').style.opacity = '1';
+    }
+  });
+}
+
+function onSelectionChange(changedQid) {
+  updateGlobalJaseupBanner();
+  if (changedQid === 'q4' || changedQid === 'q6') updateMathConflict();
+  clearError(changedQid);
+}
+
+function clearError(qid) {
+  const el = document.getElementById('err-' + qid);
+  if (el) el.style.display = 'none';
+}
+
+// ====== 제출 ======
+document.getElementById('main-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  let valid = true;
+
+  const studentId = document.getElementById('student-id').value.trim();
+  const name = document.getElementById('student-name').value.trim();
+  const birth = document.getElementById('student-birth').value;
+
+  const answers = {};
+  questions.forEach(q => {
+    if (q.isTangg) {
+      if (tanggSelected.length < 2) {
+        document.getElementById('err-' + q.id).style.display = 'block';
+        if (valid) document.getElementById('list-' + q.id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        valid = false;
+      } else {
+        const jaseupLabel = tanggJaseupCount === 2 ? '자습 2개' : tanggJaseupCount === 1 ? '자습 1개' : '';
+      const courseLabels = tanggSelected.map(v => displayLabel(v));
+      answers[q.id] = [...courseLabels, ...(jaseupLabel ? [jaseupLabel] : [])].join(' / ');
+      }
+    } else {
+      const checked = document.querySelector(`input[name="${q.id}"]:checked`);
+      if (!checked) {
+        document.getElementById('err-' + q.id).style.display = 'block';
+        if (valid) document.getElementById('list-' + q.id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        valid = false;
+      } else {
+        answers[q.id] = checked.value;
+      }
+    }
+  });
+
+  if (!valid) return;
+
+  // 수학 충돌 검사
+  if (isMathConflict(answers['q4'], answers['q6'])) {
+    alert('수학Ⅰ과 미적분/확통에서 같은 시간대 수업을 동시에 선택할 수 없습니다.\n다시 확인해 주세요.');
+    return;
+  }
+
+  // 수업 수 최소 3개 체크 (탐구 자습은 수업 아님)
+  const tanggCourses = tanggSelected;
+  const otherClasses = ['q1','q2','q3','q4','q5','q6','q7']
+    .map(id => answers[id])
+    .filter(v => v && v !== '자습').length;
+  const classCount = otherClasses + tanggCourses.length;
+
+  if (classCount < 3) {
+    alert('수업은 최소 3개 이상 선택해 주세요.\n현재 선택된 수업 수: ' + classCount + '개');
+    return;
+  }
+
+  if (SHEET_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+    console.log('제출 데이터:', { studentId, name, birth, ...answers });
+    showDone();
+    return;
+  }
+
+  document.getElementById('loading').classList.add('show');
+  try {
+    // suffix 제거 후 저장
+    const cleanAnswers = {};
+    Object.entries(answers).forEach(([k, v]) => {
+      cleanAnswers[k] = typeof v === 'string' ? v.replace(/__[A-Z]$/, '').replace(/__[A-Z]\//g, '/') : v;
+    });
+    const payload = { studentId, name, birth, ...cleanAnswers, submittedAt: new Date().toISOString() };
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    showDone();
+  } catch (err) {
+    alert('제출 중 오류가 발생했습니다. 다시 시도해 주세요.');
+  } finally {
+    document.getElementById('loading').classList.remove('show');
+  }
+});
+
+function showDone() {
+  document.getElementById('loading').classList.remove('show');
+  document.getElementById('main-form').style.display = 'none';
+  document.getElementById('jaseup-banner').style.display = 'none';
+  document.getElementById('done-screen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 탐구 에러 카드
+const tanggErrCard = document.createElement('div');
+tanggErrCard.className = 'card';
+tanggErrCard.style.cssText = 'border-left:4px solid #c0392b;display:none';
+tanggErrCard.id = 'tangg-err-card';
+tanggErrCard.innerHTML = '<div style="font-size:13px;color:#c0392b;">⚠️ 같은 시간대이거나 동일 선생님/과목 수업은 중복 선택할 수 없습니다.</div>';
+document.getElementById('wrap-4').appendChild(tanggErrCard);
+
+// 초기 탐구 UI
+updateTanggUI();
+// 초기 배너 숨김 (인적사항 섹션)
+document.getElementById('jaseup-banner').style.display = 'none';
+
+// 섹션 이동 버튼 이벤트
+document.getElementById('btn-next-info').addEventListener('click', () => goNext(0));
+document.getElementById('btn-next-1').addEventListener('click', () => goNext(1));
+document.getElementById('btn-next-2').addEventListener('click', () => goNext(2));
+document.getElementById('btn-next-3').addEventListener('click', () => goNext(3));
+document.getElementById('btn-prev-2').addEventListener('click', () => goPrev(2));
+document.getElementById('btn-prev-3').addEventListener('click', () => goPrev(3));
+document.getElementById('btn-prev-4').addEventListener('click', () => goPrev(4));
+</script>
+</body>
+</html>
