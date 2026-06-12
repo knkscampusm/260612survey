@@ -469,7 +469,7 @@
 
 <script>
 // ====== 설정 ======
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz10QOmMUuVKW6tQ-1ntpBWgW63iK3o7uNECQXh65rFW8_fjTBeemvjjL1zE14XM5RLvg/exec';
+const SHEET_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL';
 const JASEUP_MAX = 6;
 
 // ====== 수학 충돌 그룹 ======
@@ -1051,7 +1051,7 @@ document.getElementById('main-form').addEventListener('submit', async (e) => {
   const answers = {};
   questions.forEach(q => {
     if (q.isTangg) {
-      if (tanggSelected.length < 2) {
+      if (!isTanggComplete()) {
         document.getElementById('err-' + q.id).style.display = 'block';
         if (valid) document.getElementById('list-' + q.id).scrollIntoView({ behavior: 'smooth', block: 'center' });
         valid = false;
